@@ -1,0 +1,26 @@
+ @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&display=swap');
+
+ @font-face {
+  font-family: 'MetropolisRegular';
+  src: url(../public/font/metropolis.regular.otf);
+}
+
+@font-face {
+  font-family: 'MetropolisSemiBold';
+  src: url(../public/font/metropolis.semi-bold.otf);
+}
+
+@font-face {
+  font-family: 'MetropolisThin';
+  src: url(../public/font/metropolis.thin.otf);
+}
+
+ html,
+ body,
+ #root,
+ .app{
+  height:100%;
+  width:100%;
+  font-family:'MetropolisRegular','Rubik',sans-serif;
+
+ }
