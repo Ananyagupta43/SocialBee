@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   Box,
   Button,
@@ -15,6 +16,7 @@ import { useDispatch } from "react-redux";
 import { setLogin } from "../../states";
 import Dropzone from "react-dropzone";
 import FlexBetween from "components/FlexBetween";
+import Loader from "./Loader";
 
 const registerSchema = yup.object().shape({
   firstName: yup.string().required("required"),
@@ -50,6 +52,7 @@ const initialValuesLogin = {
 
 const Form = () => {
   const [pageType, setPageType] = useState("login");
+  const [isLoading, setIsLoading] = useState(false);
   const {palette} = useTheme();
   const  dispatch  = useDispatch();
   const navigate = useNavigate();
@@ -63,7 +66,7 @@ const Form = () => {
   const register = async (values, onSubmitProps) => {    //params are coming from FORMIK
       //we will create form data so normally whatever we have entered will show up in the values prop
       //we could have passed it directly but because we have an image we will=>
-
+      setIsLoading(true);
       //formData allow us to send information with iamge, we can basically add the key value pairs.
       const formData = new FormData();
       for (let value in values) {
@@ -81,13 +84,16 @@ const Form = () => {
       const savedUser=await savedUserResponse.json();
       onSubmitProps.resetForm();
       if(!savedUser.error){
+        setIsLoading(false);
           setPageType("login");
       }else{
+        setIsLoading(false);
         alert("User Already Exists");
       }
   }
 
   const login =async(values,onSubmitProps)=>{
+    setIsLoading(true);
       const loggedInUserResponse = await fetch("http://localhost:3001/auth/login",  //to save whatever is returned from the backend 
       {
           method: "POST",
@@ -105,10 +111,13 @@ const Form = () => {
            token:loggedIn.token   
           })
       );
+      setIsLoading(false);
       navigate("/home");
   }else if(loggedIn.error){
+    setIsLoading(false);
     alert(loggedIn.error);
   }else{
+    setIsLoading(false);
     alert(loggedIn.errorMessage); 
   }
   }
@@ -153,6 +162,7 @@ const Form = () => {
                   {isRegister && (
 
                       <>
+                   
                           <TextField
                                label="First Name"
                                onBlur={handleBlur}
@@ -283,9 +293,11 @@ const Form = () => {
                       {isLogin ? "LOGIN" : "REGISTER"}
 
                   </Button>
+                  {  isLoading && <Loader /> }
                   <Typography
                       onClick={() => {
                           setPageType(isLogin ? "register" : "login");
+                          setIsLoading(false)
                           resetForm();
                       }}
                       sx={{
